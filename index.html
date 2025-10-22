@@ -1,81 +1,86 @@
-<!DOCTYPE html>
-<html lang="sw">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>TWEVE LIVE</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Shaka Player CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.13/shaka-player.ui.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.13/controls.css">
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css">
+
+  <!-- Video.js CDN -->
+  <link href="https://vjs.zencdn.net/8.9.0/video-js.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#05040a" />
 </head>
-<body class="flex flex-col min-h-screen">
-  <!-- Sticky Player Container -->
-  <div id="videoContainer" class="bg-black sticky top-0 z-50 p-4 hidden">
-    <div id="placeholder" class="text-center text-slate-400 p-4">Chagua channel au sinema ili uanze kutazama</div>
-    <div class="w-full max-w-4xl mx-auto aspect-video rounded-lg shadow-lg overflow-hidden relative">
-      <div id="loading" class="hidden absolute inset-0 flex items-center justify-center">
-        <div class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-      <video id="video" class="w-full h-full"></video>
-      <button id="pipButton" title="Picture-in-Picture">PiP</button>
+<body>
+  <!-- Loading overlay -->
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="neon-ring"></div>
+      <div class="loader-text">TWEVE LIVE</div>
     </div>
   </div>
 
-  <!-- Pages -->
-  <main class="flex flex-col flex-grow pb-20">
-    <!-- LIVE TV PAGE -->
-    <section id="livePage" class="p-4">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold">Live TV Channels</h2>
-        <span class="text-xs text-slate-400">Bofya chaneli yoyote kuonesha player juu</span>
+  <header class="topbar">
+    <button id="hamburger" class="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <h1 id="brand" class="brand">TWEVE <span class="glow">LIVE</span></h1>
+    <div class="title-sub">Modern Futuristic Streaming</div>
+  </header>
+
+  <!-- Slide-out navigation -->
+  <nav id="nav" class="side-nav" aria-hidden="true">
+    <div class="nav-inner">
+      <button id="closeNav" class="close-nav" aria-label="Close">✕</button>
+      <ul>
+        <li><a href="#" data-section="live">LIVE TV</a></li>
+        <li><a href="https://purple-hamster-387761.hostingersite.com/Mali/" target="_blank" rel="noopener">18+</a></li>
+        <li><a href="https://twevemk.github.io/twevepl/" target="_blank" rel="noopener">Download Our App</a></li>
+      </ul>
+      <footer class="nav-footer">TWEVE LIVE • Neon Stream UI</footer>
+    </div>
+  </nav>
+
+  <main class="main">
+    <section id="player-section" class="player-section">
+      <div class="player-card">
+        <div class="player-header">
+          <div id="channel-title" class="channel-title">Select a channel — Live TV</div>
+          <div class="player-actions">
+            <button id="reloadBtn" class="btn small">Reload</button>
+            <button id="muteBtn" class="btn small">Mute</button>
+          </div>
+        </div>
+
+        <!-- Video.js player -->
+        <video id="tweve-player" class="video-js vjs-big-play-centered" controls preload="auto" playsinline></video>
+
+        <div id="player-status" class="player-status">Idle</div>
       </div>
-
-      <!-- SEARCH BAR -->
-      <div class="mb-4 relative">
-        <input
-          id="liveSearch"
-          type="search"
-          placeholder="🔎 Tafuta channel (jina au category)..."
-          aria-label="Tafuta channel kwa jina au kategoria"
-          class="w-full rounded-xl bg-slate-800 border border-slate-600 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
-          autocomplete="off"
-        />
-        <button id="clearSearch" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white" title="Futa utafutaji">✖</button>
-      </div>
-
-      <div id="channelListLive" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
-
-      <!-- Matokeo yasipopatikana -->
-      <p id="noResults" class="hidden text-sm text-slate-300 mt-4">Hakuna channel iliyopatikana kwa utafutaji huo.</p>
     </section>
 
-    <!-- MOVIES PAGE -->
-    <section id="moviesPage" class="hidden p-4">
-      <div class="flex items-center justify-between mb-2">
-        <h2 class="text-xl font-semibold">Movies (Pakua Tu)</h2>
-        <span class="text-xs text-slate-400">Hakuna player mtandaoni – tumia <b>Download</b>.</span>
+    <section id="channels" class="channels">
+      <div class="section-header">
+        <h2>LIVE TV</h2>
+        <p class="sub">Click a card to start streaming. Auto-reload enabled for frozen/errored streams.</p>
       </div>
-      <div class="row-scroll mb-8" id="downloadMoviesRow"></div>
-
-      <div class="flex items-center justify-between mb-2">
-        <h2 class="text-xl font-semibold">Online Movies 🍿</h2>
-        <span class="text-xs text-slate-400">Bofya <b>Play Now</b> kutazama moja kwa moja kwenye player.</span>
-      </div>
-      <div class="row-scroll" id="onlineMoviesRow"></div>
+      <div id="channel-grid" class="grid"></div>
     </section>
   </main>
 
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav">
-    <button id="btnLive" class="active" aria-pressed="true" aria-label="Tazama Live TV">📺<span>Live TV</span></button>
-    <button id="btnMovies" aria-pressed="false" aria-label="Tazama Sinema">🎬<span>Movies</span></button>
-  </nav>
+  <template id="channel-card">
+    <div class="card">
+      <img class="thumb" alt="channel thumbnail" />
+      <div class="card-body">
+        <div class="card-title"></div>
+        <div class="card-actions">
+          <button class="play-btn btn">Play</button>
+        </div>
+      </div>
+    </div>
+  </template>
 
-  <!-- Custom JavaScript -->
+  <script src="https://vjs.zencdn.net/8.9.0/video.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
